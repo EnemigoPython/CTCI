@@ -6,10 +6,33 @@
 // pales, pale -> true
 // pale, bale -> true
 // pale, bake -> false
+use std::cmp;
+
+pub fn string_idx(str: &String, idx: usize) -> char {
+    str.as_bytes()[idx] as char
+}
 
 pub fn one_away(before: String, after: String) -> bool {
-    if ((before.len() as i32) - (after.len() as i32)).abs() > 2 {
-        return false
+    let len_diff = before.len() as i32 - after.len() as i32;
+    if len_diff > 1 || len_diff < -1 { return false }
+    let mut diffs = 0;
+    let mut adjust: i32 = 0;
+    let min_len = cmp::min(before.len(), after.len());
+    for i in 0..min_len {
+        let before_c = string_idx(&before, i);
+        let after_c = string_idx(&after, (i as i32 + adjust) as usize);
+        if before_c != after_c {
+            if diffs > 0 { return false }
+            if len_diff > 0 {
+                if string_idx(&before, i+1) != after_c { return false }
+                adjust -= 1;
+            }
+            if len_diff < 0 {
+                if before_c != string_idx(&after, i+1) { return false }
+                adjust += 1;
+            }
+            diffs += 1;
+        }
     }
     true
 }
