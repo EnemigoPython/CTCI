@@ -8,7 +8,25 @@
 use std::collections::HashMap;
 
 pub fn is_palindrome_permutation(s: String) -> bool {
-    true
+    let mut s_hash: HashMap<char, usize> = HashMap::new();
+    let mut odd_pairs: usize = 0;
+    for c in s.chars() {
+        if !c.is_ascii_alphabetic() { continue }
+        let mut lower_c = c.clone();
+        lower_c.make_ascii_lowercase();
+        if let Some(x) = s_hash.get_mut(&lower_c) {
+            *x += 1;
+            if *x % 2 == 0 {
+                odd_pairs -= 1;
+            } else {
+                odd_pairs += 1;
+            }
+        } else {
+            s_hash.insert(lower_c, 1);
+            odd_pairs += 1;
+        }
+    }
+    odd_pairs < 2
 }
 
 #[cfg(test)]
@@ -32,6 +50,7 @@ mod tests {
     fn check_palindrome_permutation() {
         for (str, val) in TEST_CASES {
             let res = is_palindrome_permutation(String::from(str));
+            println!("{}", str);
             assert_eq!(res, val);
         }
     }
