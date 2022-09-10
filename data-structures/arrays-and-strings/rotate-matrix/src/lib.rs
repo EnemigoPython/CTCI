@@ -81,7 +81,6 @@ mod tests {
             [12, 11, 10, 9, 8, 7],
             [14, 13, 12, 11, 10, 9],
             [16, 15, 14, 13, 12, 11]
-        ]); // start at index 0 and do len - 1 rotations, then 1,1 and do len-3... until 0 on next row
-        // 4: 3 -> 1, 5: 4 -> 2, 6: 5 -> 3 -> 1
+        ]);
     }
 }
