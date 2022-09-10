@@ -3,17 +3,34 @@
 // is a rotation of s1 using only one call to `isSubstring` (e.g. "waterbottle"
 // is a rotation of "erbottlewat").
 
-pub fn add(left: usize, right: usize) -> usize {
-    left + right
+pub fn is_rotated_string(s1: String, s2: String) -> bool {
+    true
 }
 
 #[cfg(test)]
 mod tests {
     use super::*;
 
+    static TEST_CASES: [(&str, &str, bool); 12] = [
+        ("waterbottle", "erbottlewat", true),
+        ("erbottlewat", "waterbottle", true),
+        ("erbotwattle", "waterbottle", false),
+        ("steven", "evenst", true),
+        ("ststeven", "evenst", false),
+        ("crazy", "azycr", true),
+        ("rosewater", "waterrose", true),
+        ("roseswater", "rosewater", false),
+        ("iphone", "phonei", true),
+        ("phoine", "iphone", false),
+        ("dreams", "msdrea", true),
+        ("loopy", "opylo", true)
+    ];
+
     #[test]
-    fn it_works() {
-        let result = add(2, 2);
-        assert_eq!(result, 4);
+    fn test_rotation() {
+        for (s1, s2, expected_res) in TEST_CASES {
+            let res = is_rotated_string(String::from(s1), String::from(s2));
+            assert_eq!(res, expected_res);
+        }
     }
 }
