@@ -3,15 +3,24 @@
 // degrees. Can you do this in place?
 
 pub fn rotate_matrix<const N: usize>(m: [[i32; N]; N]) -> [[i32; N]; N] {
-    // [
-    //     [0, 1],
-    //     [0, 1]
-    // ]
-    for i in m {
-        for j in i {
-            println!("{j}");
+    if N < 2 { return m }
+    let mut tmp: char;
+    for i in 0..N/2 {
+        for j in i..N-(i+1) {
+            
         }
     }
+    // while iter + 2 < N {
+    //     for i in iter..N {
+
+    //     }
+    //     iter += 1;
+    // }
+    // for i in m {
+    //     for j in i {
+    //         println!("{j}");
+    //     }
+    // }
     m
 }
 
@@ -60,5 +69,24 @@ mod tests {
             [1, 2, 4, 4, 3],
             [0, 1, 5, 3, 4]
         ]);
+
+        let matrix_four = [
+            [1, 3, 5, 7, 9, 11],
+            [2, 4, 6, 8, 10, 12],
+            [3, 5, 7, 9, 11, 13],
+            [4, 6, 8, 10, 12, 14],
+            [5, 7, 9, 11, 13, 15],
+            [6, 8, 10, 12, 14, 16]
+        ];
+        let res_four = rotate_matrix(matrix_four);
+        assert_eq!(res_four, [
+            [6, 5, 4, 3, 2, 1],
+            [8, 7, 6, 5, 4, 3],
+            [10, 9, 8, 7, 6, 5],
+            [12, 11, 10, 9, 8, 7],
+            [14, 13, 12, 11, 10, 9],
+            [16, 15, 14, 13, 12, 11]
+        ]); // start at index 0 and do len - 1 rotations, then 1,1 and do len-3... until 0 on next row
+        // 4: 3 -> 1, 5: 4 -> 2, 6: 5 -> 3 -> 1
     }
 }
