@@ -7,20 +7,17 @@ pub fn rotate_matrix<const N: usize>(m: [[i32; N]; N]) -> [[i32; N]; N] {
     let mut tmp: char;
     for i in 0..N/2 {
         for j in i..N-(i+1) {
-            
+            let first = m[i][j];
+            let second = m[j][N-i-1];
+            let third = m[N-i-1][N-j-1];
+            let fourth = m[j][N-i-1];
+            println!("\n{i}{j}");
+            println!("{first}");
+            println!("{second}");
+            println!("{third}");
+            println!("{fourth}");
         }
     }
-    // while iter + 2 < N {
-    //     for i in iter..N {
-
-    //     }
-    //     iter += 1;
-    // }
-    // for i in m {
-    //     for j in i {
-    //         println!("{j}");
-    //     }
-    // }
     m
 }
 
