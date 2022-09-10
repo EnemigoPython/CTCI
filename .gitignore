@@ -1,9 +1,1 @@
-data-structures/arrays-and-strings/is-unique/target
-data-structures/arrays-and-strings/check-permutation/target
-data-structures/arrays-and-strings/urlify/target
-data-structures/arrays-and-strings/palindrome-permutation/target
-data-structures/arrays-and-strings/one-away/target
-data-structures/arrays-and-strings/string-compression/target
-data-structures/arrays-and-strings/rotate-matrix/target
-data-structures/arrays-and-strings/zero-matrix/target
-data-structures/arrays-and-strings/string-rotation/target
+*/*/*/target
