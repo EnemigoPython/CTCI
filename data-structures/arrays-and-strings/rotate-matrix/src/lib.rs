@@ -2,20 +2,18 @@
 // image is represented by an integer, write a method to rotate the image by 90
 // degrees. Can you do this in place?
 
-pub fn rotate_matrix<const N: usize>(m: [[i32; N]; N]) -> [[i32; N]; N] {
+pub fn rotate_matrix<const N: usize>(mut m: [[i32; N]; N]) -> [[i32; N]; N] {
     if N < 2 { return m }
-    let mut tmp: char;
     for i in 0..N/2 {
         for j in i..N-(i+1) {
             let first = m[i][j];
             let second = m[j][N-i-1];
             let third = m[N-i-1][N-j-1];
-            let fourth = m[j][N-i-1];
-            println!("\n{i}{j}");
-            println!("{first}");
-            println!("{second}");
-            println!("{third}");
-            println!("{fourth}");
+            let fourth = m[N-j-1][i];
+            m[j][N-i-1] = first;
+            m[N-i-1][N-j-1] = second;
+            m[N-j-1][i] = third;
+            m[i][j] = fourth;
         }
     }
     m
