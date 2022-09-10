@@ -5,7 +5,25 @@
 // assume the string has only uppercase and lowercase letters (a-z).
 
 pub fn compress_string(s: String) -> String {
-    String::new()
+    let mut compressed = String::with_capacity(s.len());
+    let mut curr_letter = s.as_bytes()[0] as char;
+    let mut count = 0;
+    for c in s.chars() {
+        if c == curr_letter {
+            count += 1;
+        } else {
+            compressed.push_str(&format!("{}{}", curr_letter, count));
+            curr_letter = c;
+            count = 1;
+        }
+        if compressed.len() >= s.len() { return s }
+    }
+    if compressed.len() + 2 >= s.len() {
+        s
+    } else {
+        compressed.push_str(&format!("{}{}", curr_letter, count));
+        compressed
+    }
 }
 
 #[cfg(test)]
