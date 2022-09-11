@@ -13,8 +13,8 @@ The first chapter in the book, with lots of questions about manipulating these s
 
 ## string compression
 
-# rotate matrix
+## rotate matrix
 
-# zero matrix
+## zero matrix
 
-# string rotation
+## string rotation
