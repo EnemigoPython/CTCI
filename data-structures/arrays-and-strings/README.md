@@ -47,10 +47,10 @@ I believe this is the fewest steps required to rotate all "pixels".
 - Time: O(MN) + Z*N where Z is the number of 0s in an array
 - Space: O(Z), or O(log(MN)) -- the coords of 0 are stored in sets
 - Optimisation:
-One set could have been used instead of two to store a tuple. This would have saved a layer of iterating over found 0s for row AND column values. The matrix could have been copied and the actual operation would take O(MN) time only - however this would incur the cost of the copy in both time and space.
+One set could have been used instead of two to store a tuple. This would have saved a layer of iterating over found 0s for row AND column values. Another approach is that the matrix could have been copied and the copy mutated during the iteration. This would make the actual operation O(MN) - however it would incur the cost of the copy in both time and space.
 
 ## string rotation
 - Time: O(N) + `is_substring` complexity (O(N)) = O(N)
 - Space: O(N) -- after the O(1) constant work of finding the length of the second half substring, an index is stored of the front-end substring. This is worst case O(N) if it is essentially the entire string. On average doubling the size of the string doubles the range of lengths this index could have.
 - Optimisation:
-If we were to ignore `is_substring` altogether, we could iterate the front of the string to check if it corresponds to the remainder of the other string. Using just the index and iterating one character at a time would mean no chunk is stored in memory and take space complexity to O(1).
+If we were to ignore `is_substring` altogether, we could iterate the front of the string to check if it corresponds to the remainder of the other string. Using just the index and iterating one character at a time would mean no chunk is stored in memory and take space complexity to O(1). This would however also take another O(log(N)) or worst case O(N) to traverse the string again.
