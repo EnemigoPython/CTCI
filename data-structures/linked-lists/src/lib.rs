@@ -18,10 +18,10 @@ impl<'a, T: std::clone::Clone> LinkedList<'a, T> {
         let mut _next: Option<Node<T>> = None;
         for item in values {
             let new = Node {
-                next: _next.as_ref(),
+                next: _next.cloned().as_ref(),
                 value: item,
             };
-            // _next = Some(new);
+            _next = Some(new);
         }
 
         LinkedList {
@@ -46,6 +46,16 @@ pub fn remove_dups(left: usize, right: usize) -> usize {
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn test_linked_list() {
+        let linked_list = LinkedList::from_vec(vec![3, 4, 5, 6]);
+        let curr = linked_list.head;
+        println!("{}", curr.value);
+        while let Some(x) = curr.next {
+            println!("{}", x.value);
+        }
+    }
 
     // #[test]
     // fn test_remove_dups() {
