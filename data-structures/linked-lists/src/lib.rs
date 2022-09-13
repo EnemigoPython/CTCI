@@ -5,12 +5,27 @@ pub struct LinkedList<'a, T> {
 }
 
 impl<'a, T: std::clone::Clone> LinkedList<'a, T> {
-    fn new(values: Vec<T>) -> Self {
+    fn new(_value: T) -> Self {
         LinkedList {
             head: Node {
                 next: None,
-                value: values.last().cloned().unwrap(),
+                value: _value,
             },
+        }
+    }
+
+    fn from_vec(values: Vec<T>) -> Self {
+        let mut _next: Option<Node<T>> = None;
+        for item in values {
+            let new = Node {
+                next: _next.as_ref(),
+                value: item,
+            };
+            // _next = Some(new);
+        }
+
+        LinkedList {
+            head: _next.unwrap(),
         }
     }
 }
