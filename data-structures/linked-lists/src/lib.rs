@@ -1,39 +1,40 @@
-/// We could write `use std::collections::LinkedList`...
-/// Or we could write it ourselves!
-pub struct LinkedList<'a, T> {
-    head: Node<'a, T>,
+/// A single node in the linked list
+pub struct Node <T> {
+    next: Box<Option<Node<T>>>,
+    value: T,
 }
 
-impl<'a, T: std::clone::Clone> LinkedList<'a, T> {
+/// We could write `use std::collections::LinkedList`...
+/// Or we could write it ourselves!
+pub struct LinkedList <T> {
+    head: Node<T>,
+}
+
+impl<'a, T: std::clone::Clone> LinkedList <T> {
     fn new(_value: T) -> Self {
         LinkedList {
             head: Node {
-                next: None,
+                next: Box::new(None),
                 value: _value,
             },
         }
     }
 
-    fn from_vec(values: Vec<T>) -> Self {
-        let mut _next: Option<Node<T>> = None;
-        for item in values {
-            let new = Node {
-                next: _next.cloned().as_ref(),
-                value: item,
-            };
-            _next = Some(new);
-        }
+    // fn from_vec(values: Vec<T>) -> Self {
+    //     let mut node_refs: Vec<Option<Node<T>>>;
+    //     node_refs.push(None);
+    //     for item in values {
+    //         let new = Node {
+    //             next: node_refs.pop().unwrap().as_ref(),
+    //             value: item,
+    //         };
+    //         node_refs.push(Some(new));
+    //     }
 
-        LinkedList {
-            head: _next.unwrap(),
-        }
-    }
-}
-
-/// A single node in the linked list
-pub struct Node<'a, T> {
-    next: Option<&'a Node<'a, T>>,
-    value: T,
+    //     LinkedList {
+    //         head: node_refs.pop().unwrap().unwrap(),
+    //     }
+    // }
 }
 
 /// prompt: Write code to remove duplicates from an unsorted linked list.
@@ -47,15 +48,15 @@ pub fn remove_dups(left: usize, right: usize) -> usize {
 mod tests {
     use super::*;
 
-    #[test]
-    fn test_linked_list() {
-        let linked_list = LinkedList::from_vec(vec![3, 4, 5, 6]);
-        let curr = linked_list.head;
-        println!("{}", curr.value);
-        while let Some(x) = curr.next {
-            println!("{}", x.value);
-        }
-    }
+    // #[test]
+    // fn test_linked_list() {
+    //     let linked_list = LinkedList::from_vec(vec![3, 4, 5, 6]);
+    //     let curr = linked_list.head;
+    //     println!("{}", curr.value);
+    //     while let Some(x) = curr.next {
+    //         println!("{}", x.value);
+    //     }
+    // }
 
     // #[test]
     // fn test_remove_dups() {
