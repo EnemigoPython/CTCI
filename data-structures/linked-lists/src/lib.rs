@@ -83,14 +83,16 @@ pub fn remove_dups(left: usize, right: usize) -> usize {
 mod tests {
     use super::*;
 
-    // #[test]
-    // fn append() {
-    //     let list = LinkedList::new(3);
-    //     for x in list.iter() {
-    //         println!("{x}");
-    //     }
-    // }
-    
+    #[test]
+    fn append() {
+        let mut list = LinkedList::new(3);
+        list.append(3);
+        println!("test");
+        for x in list.iter() {
+            println!("{x}");
+        }
+    }
+
     // #[test]
     // fn test_linked_list() {
     //     let linked_list = LinkedList::from_vec(vec![3, 4, 5, 6]);
