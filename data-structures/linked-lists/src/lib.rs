@@ -20,6 +20,20 @@ impl<'a, T: std::clone::Clone> LinkedList <T> {
         }
     }
 
+    fn append(&mut self, _value: T) {
+        let mut curr_node = &mut *self.head.next;
+        loop {
+            match curr_node {
+                Some(node) => curr_node = &mut *node.next,
+                None => break,
+            }
+        }
+        curr_node.as_mut().unwrap().next = Box::new(Some(Node {
+            next: Box::new(None),
+            value: _value,
+        }));
+    }
+
     // fn from_vec(values: Vec<T>) -> Self {
     //     let mut node_refs: Vec<Option<Node<T>>>;
     //     node_refs.push(None);
