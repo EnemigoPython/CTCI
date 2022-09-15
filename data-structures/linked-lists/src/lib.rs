@@ -6,11 +6,12 @@ pub struct Node <T> {
 
 /// We could write `use std::collections::LinkedList`...
 /// Or we could write it ourselves!
-pub struct LinkedList <T> {
+pub struct LinkedList <T: Copy> {
     head: Node<T>,
 }
 
-impl<'a, T: std::clone::Clone> LinkedList <T> {
+
+impl<T: Copy> LinkedList <T> {
     fn new(_value: T) -> Self {
         LinkedList {
             head: Node {
@@ -34,6 +35,10 @@ impl<'a, T: std::clone::Clone> LinkedList <T> {
         }));
     }
 
+    fn iter<'a>(&'a self) -> LinkedListIter<'a, T> {
+        LinkedListIter { curr: &self.head }.into_iter()
+    }
+    
     // fn from_vec(values: Vec<T>) -> Self {
     //     let mut node_refs: Vec<Option<Node<T>>>;
     //     node_refs.push(None);
@@ -44,11 +49,27 @@ impl<'a, T: std::clone::Clone> LinkedList <T> {
     //         };
     //         node_refs.push(Some(new));
     //     }
-
+                
     //     LinkedList {
     //         head: node_refs.pop().unwrap().unwrap(),
     //     }
     // }
+}
+                
+/// Wrapper object for Linked List iteration with iter() 
+pub struct LinkedListIter <'a, T: Copy> {
+    curr: &'a Node<T>,
+}
+
+impl <'a, T: Copy> Iterator for LinkedListIter<'a, T> {
+    type Item = T;
+
+    fn next(&mut self) -> Option<Self::Item> {
+        match &*self.curr.next {
+            Some(x) => Some(x.value),
+            None => None,
+        }
+    }
 }
 
 /// prompt: Write code to remove duplicates from an unsorted linked list.
@@ -62,6 +83,14 @@ pub fn remove_dups(left: usize, right: usize) -> usize {
 mod tests {
     use super::*;
 
+    // #[test]
+    // fn append() {
+    //     let list = LinkedList::new(3);
+    //     for x in list.iter() {
+    //         println!("{x}");
+    //     }
+    // }
+    
     // #[test]
     // fn test_linked_list() {
     //     let linked_list = LinkedList::from_vec(vec![3, 4, 5, 6]);
