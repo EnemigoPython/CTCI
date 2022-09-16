@@ -1,3 +1,5 @@
+use core::iter::Map;
+
 /// A single node in the linked list
 pub struct Node <T> {
     next: Box<Option<Node<T>>>,
@@ -22,23 +24,27 @@ impl<T: Copy> LinkedList <T> {
     }
 
     fn append(&mut self, _value: T) {
-        let mut curr_node = &mut *self.head.next;
-        loop {
-            match curr_node {
-                Some(node) => curr_node = &mut *node.next,
-                None => break,
-            }
-        }
-        curr_node.as_mut().unwrap().next = Box::new(Some(Node {
-            next: Box::new(None),
-            value: _value,
-        }));
+        // // let mut curr_node = &mut *self.head.next;
+        // let mut curr_node = &mut &Some(self.head);
+        // loop {
+        //     match curr_node {
+        //         Some(node) => curr_node = &mut *node.next,
+        //         None => break,
+        //     }
+        // }
+        // curr_node.as_mut().unwrap().next = Box::new(Some(Node {
+        //     next: Box::new(None),
+        //     value: _value,
+        // }));
     }
 
     fn iter<'a>(&'a self) -> LinkedListIter<'a, T> {
-        LinkedListIter { curr: &self.head }.into_iter()
+        LinkedListIter { curr: Some(&self.head) }.into_iter()
     }
     
+    fn iter_vals<'a>(&'a self) -> Map<LinkedListIter<'a, T>, Box<dyn FnMut(&Node<T>) -> T>> {
+        LinkedListIter { curr: Some(&self.head) }.into_iter().map(Box::new(|x| x.value))
+    }
     // fn from_vec(values: Vec<T>) -> Self {
     //     let mut node_refs: Vec<Option<Node<T>>>;
     //     node_refs.push(None);
@@ -58,19 +64,37 @@ impl<T: Copy> LinkedList <T> {
                 
 /// Wrapper object for Linked List iteration with iter() 
 pub struct LinkedListIter <'a, T: Copy> {
-    curr: &'a Node<T>,
+    curr: Option<&'a Node<T>>,
 }
 
 impl <'a, T: Copy> Iterator for LinkedListIter<'a, T> {
-    type Item = T;
+    type Item = &'a Node<T>;
 
     fn next(&mut self) -> Option<Self::Item> {
-        match &*self.curr.next {
-            Some(x) => Some(x.value),
+        let res = match self.curr {
+            Some(x) => Some(x),
             None => None,
+        };
+        if let Some(_) = res {
+            self.curr = (*self.curr.unwrap().next).as_ref();
         }
+        res
     }
 }
+// impl <'a, T: Copy> Iterator for LinkedListIter<'a, T> {
+//     type Item = T;
+
+//     fn next(&mut self) -> Option<Self::Item> {
+//         let res = match &self.curr {
+//             Some(x) => Some(x.value),
+//             None => None,
+//         };
+//         if let Some(_) = res {
+//             self.curr = (*self.curr.unwrap().next).as_ref();
+//         }
+//         res
+//     }
+// }
 
 /// prompt: Write code to remove duplicates from an unsorted linked list.
 /// FOLLOW UP:
@@ -86,9 +110,8 @@ mod tests {
     #[test]
     fn append() {
         let mut list = LinkedList::new(3);
-        list.append(3);
-        println!("test");
-        for x in list.iter() {
+        // list.append(3);
+        for x in list.iter_vals() {
             println!("{x}");
         }
     }
