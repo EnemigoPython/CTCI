@@ -1,134 +1,60 @@
-use core::iter::Map;
+type Link<T> = Option<Box<Node<T>>>;
 
-/// A single node in the linked list
-pub struct Node <T> {
-    next: Box<Option<Node<T>>>,
+struct Node<T> {
     value: T,
+    next: Link<T>,
 }
 
-/// We could write `use std::collections::LinkedList`...
-/// Or we could write it ourselves!
-pub struct LinkedList <T: Copy> {
-    head: Node<T>,
+struct List<T> {
+    head: Link<T>,
 }
 
-
-impl<T: Copy> LinkedList <T> {
-    fn new(_value: T) -> Self {
-        LinkedList {
-            head: Node {
-                next: Box::new(None),
-                value: _value,
-            },
-        }
+impl<T> List<T> {
+    fn new() -> Self {
+        List { head: None }
     }
 
-    fn append(&mut self, _value: T) {
-        // // let mut curr_node = &mut *self.head.next;
-        // let mut curr_node = &mut &Some(self.head);
-        // loop {
-        //     match curr_node {
-        //         Some(node) => curr_node = &mut *node.next,
-        //         None => break,
-        //     }
-        // }
-        // curr_node.as_mut().unwrap().next = Box::new(Some(Node {
-        //     next: Box::new(None),
-        //     value: _value,
-        // }));
-    }
-
-    fn iter<'a>(&'a self) -> LinkedListIter<'a, T> {
-        LinkedListIter { curr: Some(&self.head) }.into_iter()
-    }
-    
-    fn iter_vals<'a>(&'a self) -> Map<LinkedListIter<'a, T>, Box<dyn FnMut(&Node<T>) -> T>> {
-        LinkedListIter { curr: Some(&self.head) }.into_iter().map(Box::new(|x| x.value))
-    }
-    // fn from_vec(values: Vec<T>) -> Self {
-    //     let mut node_refs: Vec<Option<Node<T>>>;
-    //     node_refs.push(None);
-    //     for item in values {
-    //         let new = Node {
-    //             next: node_refs.pop().unwrap().as_ref(),
-    //             value: item,
-    //         };
-    //         node_refs.push(Some(new));
-    //     }
-                
-    //     LinkedList {
-    //         head: node_refs.pop().unwrap().unwrap(),
-    //     }
-    // }
-}
-                
-/// Wrapper object for Linked List iteration with iter() 
-pub struct LinkedListIter <'a, T: Copy> {
-    curr: Option<&'a Node<T>>,
-}
-
-impl <'a, T: Copy> Iterator for LinkedListIter<'a, T> {
-    type Item = &'a Node<T>;
-
-    fn next(&mut self) -> Option<Self::Item> {
-        let res = match self.curr {
-            Some(x) => Some(x),
-            None => None,
+    fn push(&mut self, v: T) {
+        let node = Node {
+            value: v,
+            next: self.head.take(),
         };
-        if let Some(_) = res {
-            self.curr = (*self.curr.unwrap().next).as_ref();
+        self.head = Some(Box::new(node));
+    }
+
+    fn pop(&mut self) -> Option<T> {
+        self.head.take().map(|node| {
+            self.head = node.next;
+            node.value
+        })
+    }
+
+    fn from_vec(v: Vec<T>) -> Self {
+        let mut list = List::new();
+        for i in v {
+            list.push(i);
         }
-        res
+        list
     }
 }
-// impl <'a, T: Copy> Iterator for LinkedListIter<'a, T> {
-//     type Item = T;
 
-//     fn next(&mut self) -> Option<Self::Item> {
-//         let res = match &self.curr {
-//             Some(x) => Some(x.value),
-//             None => None,
-//         };
-//         if let Some(_) = res {
-//             self.curr = (*self.curr.unwrap().next).as_ref();
-//         }
-//         res
-//     }
-// }
-
-/// prompt: Write code to remove duplicates from an unsorted linked list.
+/// remove_dups prompt: Write code to remove duplicates from an unsorted linked list.
 /// FOLLOW UP:
 /// How would you solve this problem if a temporary buffer is not allowed?
-pub fn remove_dups(left: usize, right: usize) -> usize {
-    left + right
-}
 
 #[cfg(test)]
 mod tests {
-    use super::*;
+    use super::List;
 
     #[test]
-    fn append() {
-        let mut list = LinkedList::new(3);
-        // list.append(3);
-        for x in list.iter_vals() {
-            println!("{x}");
-        }
+    fn push_and_pop() {
+        let mut list: List<i32> = List::new();
+        assert_eq!(list.pop(), None);
+        list.push(1);
+        list.push(2);
+        list.push(3);
+        assert_eq!(list.pop(), Some(3));
+        assert_eq!(list.pop(), Some(2));
+        assert_eq!(list.pop(), Some(1));
     }
-
-    // #[test]
-    // fn test_linked_list() {
-    //     let linked_list = LinkedList::from_vec(vec![3, 4, 5, 6]);
-    //     let curr = linked_list.head;
-    //     println!("{}", curr.value);
-    //     while let Some(x) = curr.next {
-    //         println!("{}", x.value);
-    //     }
-    // }
-
-    // #[test]
-    // fn test_remove_dups() {
-    //     let result = add(2, 2);
-    //     assert_eq!(result, 4);
-    // }
 }
