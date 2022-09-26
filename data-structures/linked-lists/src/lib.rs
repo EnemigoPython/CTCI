@@ -115,19 +115,20 @@ pub mod linked_list {
         /// EXAMPLE
         /// Input: the node c from the linked list a -> b -> c -> d -> e -> f
         /// Result: nothing is returned, but the new linked list looks like a -> b -> d -> e -> f
-        // pub fn delete_middle_node(&mut self, del_node: Option<&Node<T>>) {
-        pub fn delete_middle_node(&mut self, del_node: *const Option<Box<Node<i32>>>) {
-            // if let Some(d_n) = del_node {
-            //     let mut curr = &mut self.head;
-            //     while let Some(node) = curr.as_deref_mut() {
-            //         if let Some(next) = node.next.as_deref_mut() {
-            //             if ptr::eq(d_n, next) {
-
-            //             }
-            //         }
-            //         curr = &mut node.next;
-            //     }
-            // }
+        pub fn delete_middle_node(&mut self, raw_del_node: *const Link<T>) {
+            let del_node = unsafe { &*raw_del_node };
+            if let Some(d_n) = del_node.as_deref() {
+                println!("{:?}", d_n.value);
+                let mut curr = &mut self.head;
+                while let Some(node) = curr.as_deref_mut() {
+                    if let Some(next) = node.next.as_deref_mut() {
+                        if ptr::eq(d_n, next) {
+                            node.remove_next();
+                        }
+                    }
+                    curr = &mut node.next;
+                }
+            }
         }
     }
 
@@ -175,7 +176,6 @@ pub mod linked_list {
 #[cfg(test)]
 mod tests {
     use super::linked_list::List;
-    use std::ptr::addr_of;
 
     #[test]
     fn push_and_pop() {
@@ -241,7 +241,7 @@ mod tests {
     #[test]
     fn test_delete_middle_node() {
         let test_cases = vec![
-            (vec![3, 4, 5, 6, 2], 2, vec![3, 4, 6, 2]),
+            (vec![3, 4, 5, 6, 2], 2, vec![2, 6, 4, 3]),
         ];
         for (input, idx, output) in test_cases {
             let start_range = 0..idx+1;
@@ -254,7 +254,7 @@ mod tests {
                 list.push(val);
             }
             list.delete_middle_node(node_ref);
-            assert_eq!(true, false);
+            assert_eq!(list.to_vec(), output);
         }
     }
 }
