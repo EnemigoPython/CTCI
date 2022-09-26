@@ -1,7 +1,6 @@
-use std::collections::HashSet;
-
 pub mod linked_list {
     use std::{collections::HashSet, hash::Hash};
+    use std::fmt::Debug;
 
     type Link<T> = Option<Box<Node<T>>>;
 
@@ -73,7 +72,10 @@ pub mod linked_list {
     }
 
     // challenge impl
-    impl<T> List<T> where T: Hash + Eq + Clone {
+    impl<T> List<T>
+    where
+        T: Hash + Eq + Clone + Debug,
+    {
         /// remove_dups prompt: Write code to remove duplicates from an unsorted linked list.
         /// FOLLOW UP:
         /// How would you solve this problem if a temporary buffer is not allowed?
@@ -93,6 +95,16 @@ pub mod linked_list {
                 }
                 curr = &mut node.next;
             }
+        }
+
+        /// kth prompt: Implement an algorithm to find the kth to last element of a singly linked list.
+        pub fn kth(&self, k: usize) -> Option<&T> {
+            let mut iter = self.iter();
+            let mut val: Option<&T> = None;
+            for _ in 0..k+1 {
+                val = iter.next();
+            }
+            val
         }
     }
 
@@ -183,6 +195,22 @@ mod tests {
             let mut list: List<i32> = List::from_vec(input);
             list.remove_dups();
             assert_eq!(list.to_vec(), output);
+        }
+    }
+
+    #[test]
+    fn test_kth() {
+        let test_cases = vec![
+            (vec![3, 4, 3, 1, 2], 3, Some(&4)),
+            (vec![2, 1], 0, Some(&1)),
+            (vec![5, 7, 33, 21, 1], 1, Some(&21)),
+            (vec![66, 100, 4, 2, 101], 4, Some(&66)),
+            (vec![2, 5], 3, None),
+            (vec![3, 4, 3, 1, 2], 5, None),
+        ];
+        for (input, idx, output) in test_cases {
+            let list: List<i32> = List::from_vec(input);
+            assert_eq!(list.kth(idx), output);
         }
     }
 }
