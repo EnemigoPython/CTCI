@@ -1,10 +1,10 @@
 pub mod linked_list {
-    use std::{collections::HashSet, hash::Hash};
     use std::fmt::Debug;
+    use std::{collections::HashSet, hash::Hash};
 
     type Link<T> = Option<Box<Node<T>>>;
 
-    struct Node<T> {
+    pub struct Node<T> {
         value: T,
         next: Link<T>,
     }
@@ -18,7 +18,7 @@ pub mod linked_list {
     }
 
     pub struct List<T> {
-        head: Link<T>,
+        pub head: Link<T>,
     }
 
     // base impl
@@ -104,8 +104,18 @@ pub mod linked_list {
             if k == 0 || k > len {
                 None
             } else {
-                Some(to_vec[len-k])
+                Some(to_vec[len - k])
             }
+        }
+
+        /// delete_middle_node prompt: Implement an algorithm to delete a node in the middle (i.e. any node but
+        /// the first and last node, not necessarily the exact middle) of a singly linked list, given only access
+        /// to that node.
+        /// EXAMPLE
+        /// Input: the node c from the linked list a -> b -> c -> d -> e -> f
+        /// Result: nothing is returned, but the new linked list looks like a -> b -> d -> e -> f
+        pub fn delete_middle_node(&mut self, del_node: &Node<T>) {
+
         }
     }
 
@@ -212,6 +222,26 @@ mod tests {
         for (input, idx, output) in test_cases {
             let list: List<i32> = List::from_vec(input);
             assert_eq!(list.kth(idx), output);
+        }
+    }
+
+    #[test]
+    fn test_delete_middle_node() {
+        let test_cases = vec![
+            (vec![3, 4, 5, 6, 2], 2, vec![3, 4, 6, 2]),
+        ];
+        for (input, idx, output) in test_cases {
+            let start_range = 0..idx+1;
+            let start_slice: Vec<i32> = (&input[start_range]).to_owned();
+            let mut list = List::from_vec(start_slice);
+            let node_ref = list.head.as_deref();
+            let end_range = idx+1..input.len();
+            let end_slice: Vec<i32> = (&input[end_range]).to_owned();
+            println!("{end_slice:?}");
+            for val in end_slice {
+                list.push(val);
+            }
+            assert_eq!(true, false);
         }
     }
 }
