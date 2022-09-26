@@ -99,12 +99,13 @@ pub mod linked_list {
 
         /// kth prompt: Implement an algorithm to find the kth to last element of a singly linked list.
         pub fn kth(&self, k: usize) -> Option<&T> {
-            let mut iter = self.iter();
-            let mut val: Option<&T> = None;
-            for _ in 0..k+1 {
-                val = iter.next();
+            let to_vec: Vec<&T> = self.iter().collect();
+            let len = to_vec.len();
+            if k == 0 || k > len {
+                None
+            } else {
+                Some(to_vec[len-k])
             }
-            val
         }
     }
 
@@ -201,12 +202,12 @@ mod tests {
     #[test]
     fn test_kth() {
         let test_cases = vec![
-            (vec![3, 4, 3, 1, 2], 3, Some(&4)),
-            (vec![2, 1], 0, Some(&1)),
-            (vec![5, 7, 33, 21, 1], 1, Some(&21)),
-            (vec![66, 100, 4, 2, 101], 4, Some(&66)),
+            (vec![3, 4, 3, 1, 2], 3, Some(&3)),
+            (vec![2, 1], 1, Some(&2)),
+            (vec![5, 7, 33, 21, 1], 3, Some(&33)),
+            (vec![66, 100, 4, 2, 101], 1, Some(&66)),
             (vec![2, 5], 3, None),
-            (vec![3, 4, 3, 1, 2], 5, None),
+            (vec![3, 4, 3, 1, 2], 6, None),
         ];
         for (input, idx, output) in test_cases {
             let list: List<i32> = List::from_vec(input);
