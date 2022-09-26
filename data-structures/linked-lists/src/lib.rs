@@ -1,6 +1,7 @@
 pub mod linked_list {
     use std::fmt::Debug;
     use std::{collections::HashSet, hash::Hash};
+    use std::ptr;
 
     type Link<T> = Option<Box<Node<T>>>;
 
@@ -114,8 +115,19 @@ pub mod linked_list {
         /// EXAMPLE
         /// Input: the node c from the linked list a -> b -> c -> d -> e -> f
         /// Result: nothing is returned, but the new linked list looks like a -> b -> d -> e -> f
-        pub fn delete_middle_node(&mut self, del_node: &Node<T>) {
+        // pub fn delete_middle_node(&mut self, del_node: Option<&Node<T>>) {
+        pub fn delete_middle_node(&mut self, del_node: *const Option<Box<Node<i32>>>) {
+            // if let Some(d_n) = del_node {
+            //     let mut curr = &mut self.head;
+            //     while let Some(node) = curr.as_deref_mut() {
+            //         if let Some(next) = node.next.as_deref_mut() {
+            //             if ptr::eq(d_n, next) {
 
+            //             }
+            //         }
+            //         curr = &mut node.next;
+            //     }
+            // }
         }
     }
 
@@ -163,6 +175,7 @@ pub mod linked_list {
 #[cfg(test)]
 mod tests {
     use super::linked_list::List;
+    use std::ptr::addr_of;
 
     #[test]
     fn push_and_pop() {
@@ -234,13 +247,13 @@ mod tests {
             let start_range = 0..idx+1;
             let start_slice: Vec<i32> = (&input[start_range]).to_owned();
             let mut list = List::from_vec(start_slice);
-            let node_ref = list.head.as_deref();
+            let node_ref = std::ptr::addr_of!(list.head);
             let end_range = idx+1..input.len();
             let end_slice: Vec<i32> = (&input[end_range]).to_owned();
-            println!("{end_slice:?}");
             for val in end_slice {
                 list.push(val);
             }
+            list.delete_middle_node(node_ref);
             assert_eq!(true, false);
         }
     }
