@@ -1,6 +1,5 @@
 pub mod linked_list {
-    use std::fmt::Debug;
-    use std::{collections::HashSet, hash::Hash};
+    use std::collections::HashSet;
     use std::ptr;
 
     type Link<T> = Option<Box<Node<T>>>;
@@ -89,15 +88,16 @@ pub mod linked_list {
     }
 
     // challenge impl
-    impl<T> List<T>
-    where
-        T: Hash + Eq + Clone + Debug + std::cmp::PartialOrd<i32>,
+    // impl<T> List<T>  // I started out writing these generic but more and more challenges required int
+    // where
+    // T: Hash + Eq + Clone + Debug + std::cmp::PartialOrd<i32>,
+    impl List<i32>
     {
         /// remove_dups prompt: Write code to remove duplicates from an unsorted linked list.
         /// FOLLOW UP:
         /// How would you solve this problem if a temporary buffer is not allowed?
         pub fn remove_dups(&mut self) {
-            let mut unique: HashSet<T> = HashSet::new();
+            let mut unique: HashSet<i32> = HashSet::new();
             let mut curr = &mut self.head;
             if let Some(first) = curr.as_deref_mut() {
                 unique.insert(first.value.clone());
@@ -115,8 +115,8 @@ pub mod linked_list {
         }
 
         /// kth prompt: Implement an algorithm to find the kth to last element of a singly linked list.
-        pub fn kth(&self, k: usize) -> Option<&T> {
-            let to_vec: Vec<&T> = self.iter().collect();
+        pub fn kth(&self, k: usize) -> Option<&i32> {
+            let to_vec: Vec<&i32> = self.iter().collect();
             let len = to_vec.len();
             if k == 0 || k > len {
                 None
@@ -131,7 +131,7 @@ pub mod linked_list {
         /// EXAMPLE
         /// Input: the node c from the linked list a -> b -> c -> d -> e -> f
         /// Result: nothing is returned, but the new linked list looks like a -> b -> d -> e -> f
-        pub fn delete_middle_node(&mut self, raw_node_ptr: *const Node<T>) {
+        pub fn delete_middle_node(&mut self, raw_node_ptr: *const Node<i32>) {
             let mut curr = &mut self.head;
             if let Some(node) = curr.as_deref() {
                 if ptr::eq(raw_node_ptr, node) {
@@ -159,7 +159,7 @@ pub mod linked_list {
         /// Input: 3 -> 5 -> 8 -> 5 -> 10 -> 2 -> 1 [partition=5]
         /// Output: 3 -> 1 -> 2     ->      10 -> 5 -> 5 -> 8
         pub fn partition(&mut self, x: i32) {
-            let mut buff: Vec<T> = Vec::new();
+            let mut buff: Vec<i32> = Vec::new();
             while let Some(node) = &mut self.head.as_deref() {
                 if node.peek() < &x {
                     buff.push(node.value.clone());
@@ -183,6 +183,20 @@ pub mod linked_list {
             for val in buff {
                 self.push(val);
             }
+        }
+
+        /// sum_lists prompt: you have two numbers represented by a linked list, where
+        /// each node contains a single digit. The digits are stored in reverse order, such
+        /// that the 1's digit is at the head of the list. Write a function that adds the 
+        /// two numbers and returns the sum as a linked list. (You are not allowed to "cheat"
+        /// and just convert the linked list to an integer.)
+        /// EXAMPLE
+        /// Input: (7 -> 1 -> 6) + (5 -> 9 -> 2). That is, 617 + 295.
+        /// Output: 2 -> 1 -> 9. That is, 912.
+        /// FOLLOW UP
+        /// Repeat the problem for forward order.
+        pub fn sum_lists() {
+
         }
     }
 
