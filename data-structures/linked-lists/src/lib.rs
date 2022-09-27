@@ -91,7 +91,7 @@ pub mod linked_list {
     // challenge impl
     impl<T> List<T>
     where
-        T: Hash + Eq + Clone + Debug,
+        T: Hash + Eq + Clone + Debug + std::cmp::PartialOrd<i32>,
     {
         /// remove_dups prompt: Write code to remove duplicates from an unsorted linked list.
         /// FOLLOW UP:
@@ -158,8 +158,31 @@ pub mod linked_list {
         /// EXAMPLE
         /// Input: 3 -> 5 -> 8 -> 5 -> 10 -> 2 -> 1 [partition=5]
         /// Output: 3 -> 1 -> 2     ->      10 -> 5 -> 5 -> 8
-        pub fn partition(&mut self) {
-
+        pub fn partition(&mut self, x: i32) {
+            let mut buff: Vec<T> = Vec::new();
+            while let Some(node) = &mut self.head.as_deref() {
+                if node.peek() < &x {
+                    buff.push(node.value.clone());
+                    self.pop();
+                } else {
+                    break;
+                }
+            }
+            let mut curr = &mut self.head;
+            while let Some(node) = curr.as_deref_mut() {
+                while let Some(next) = node.next.as_deref() {
+                    if next.peek() < &x {
+                        buff.push(next.value.clone());
+                        node.remove_next();
+                    } else {
+                        break;
+                    }
+                }
+                curr = &mut node.next;
+            }
+            for val in buff {
+                self.push(val);
+            }
         }
     }
 
@@ -304,6 +327,22 @@ mod tests {
                 list.delete_middle_node(node_ptr);
                 assert_eq!(list.to_vec(), output);
             }
+        }
+    }
+
+    #[test]
+    fn test_partition() {
+        let test_cases = vec![
+            (vec![2, 6, 4, 3, 1, 6, 7], 3, vec![2, 1, 7, 6, 3, 4, 6]),
+            (vec![3, 8, 6, 5], 9, vec![3, 8, 6, 5]),
+            (vec![1, 5, 3, 7, 44, 3], 2, vec![1, 3, 44, 7, 3, 5]),
+            (vec![7, 33, 2, 11, 11, 10, 6, 3, 22], 11, vec![7, 2, 10, 6, 3, 22, 11, 11, 33]),
+            (vec![50, 25, 1, 3, 100], 30, vec![25, 1, 3, 100, 50]),
+        ];
+        for (input, x, output) in test_cases {
+            let mut list = List::from_vec(input);
+            list.partition(x);
+            assert_eq!(list.to_vec(), output);
         }
     }
 }
