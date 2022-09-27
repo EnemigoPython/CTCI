@@ -195,8 +195,28 @@ pub mod linked_list {
         /// Output: 2 -> 1 -> 9. That is, 912.
         /// FOLLOW UP
         /// Repeat the problem for forward order.
-        pub fn sum_lists() {
+        pub fn sum_lists(list1: List<i32>, list2: List<i32>) -> List<i32> {
+            let mut total: i32 = 0;
+            for (e, val) in (0..).zip(list1.iter().map(|v| *v)) {
+                total += val * 10_i32.pow(e);
+            }
+            for (e, val) in (0..).zip(list2.iter().map(|v| *v)) {
+                total += val * 10_i32.pow(e);
+            }
+            let mut ret_list = List::new();
+            loop {
+                let mut total_mod = total.clone();
+                total_mod /= 10;
+                total_mod *= 10;
+                ret_list.push(total - total_mod);
+                total /= 10;
+                if total < 10 {
+                    break;
+                }
+            }
+            ret_list.push(total);
 
+            ret_list
         }
     }
 
@@ -357,6 +377,24 @@ mod tests {
             let mut list = List::from_vec(input);
             list.partition(x);
             assert_eq!(list.to_vec(), output);
+        }
+    }
+
+    #[test]
+    fn test_sum_lists() {
+        let test_cases = vec![
+            (vec![5, 1], vec![1, 0, 1], vec![1, 5, 2]),
+            (vec![4, 2], vec![2, 0], vec![6, 2]),
+            (vec![7, 3], vec![2, 7], vec![1, 0, 0]),
+            (vec![2], vec![4, 4], vec![4, 6]),
+            (vec![2, 0, 4], vec![5, 3, 3], vec![7, 3, 7]),
+            (vec![9, 2, 6], vec![1, 1, 4, 3], vec![2, 0, 6, 9]),
+        ];
+        for (l1, l2, output) in test_cases {
+            assert_eq!(
+                List::sum_lists(List::from_vec(l1), List::from_vec(l2)).to_vec(), 
+                output
+            );
         }
     }
 }
