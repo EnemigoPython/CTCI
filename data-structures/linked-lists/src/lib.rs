@@ -131,19 +131,22 @@ pub mod linked_list {
         /// EXAMPLE
         /// Input: the node c from the linked list a -> b -> c -> d -> e -> f
         /// Result: nothing is returned, but the new linked list looks like a -> b -> d -> e -> f
-        pub fn delete_middle_node(&mut self, raw_del_node: *const Link<T>) {
-            let del_node = unsafe { &*raw_del_node };
-            if let Some(d_n) = del_node.as_deref() {
-                println!("{:?}", d_n.value);
-                let mut curr = &mut self.head;
-                while let Some(node) = curr.as_deref_mut() {
-                    if let Some(next) = node.next.as_deref_mut() {
-                        if ptr::eq(d_n, next) {
-                            node.remove_next();
-                        }
-                    }
-                    curr = &mut node.next;
+        pub fn delete_middle_node(&mut self, raw_node_ptr: *const Node<T>) {
+            let mut curr = &mut self.head;
+            if let Some(node) = curr.as_deref() {
+                if ptr::eq(raw_node_ptr, node) {
+                    self.pop();
+                    return;
                 }
+            }
+            while let Some(node) = curr.as_deref_mut() {
+                if let Some(next) = node.next.as_deref() {
+                    if ptr::eq(raw_node_ptr, next) {
+                        node.remove_next();
+                        return;
+                    }
+                }
+                curr = &mut node.next;
             }
         }
     }
@@ -192,6 +195,7 @@ pub mod linked_list {
 #[cfg(test)]
 mod tests {
     use super::linked_list::List;
+    use std::ptr;
 
     #[test]
     fn push_and_pop() {
@@ -273,14 +277,21 @@ mod tests {
 
     #[test]
     fn test_delete_middle_node() {
-        // let test_cases = vec![
-        //     (vec![3, 4, 5, 6, 2], 2, vec![2, 6, 4, 3]),
-        // ];
-        // for (input, idx, output) in test_cases {
-        //     let mut list = List::from_vec(input);
-        //     // let node = 
-        //     // list.delete_middle_node(node_ref);
-        //     assert_eq!(list.to_vec(), output);
-        // }
+        let test_cases = vec![
+            (vec![3, 4, 5, 6, 2], 2, vec![2, 6, 4, 3]),
+            (vec![10, 11, 12], 0, vec![11, 10]),
+            (vec![7, 5, 25, 10, 9], 4, vec![9, 10, 25, 5]),
+            (vec![200, 5, 1], 1, vec![1, 200]),
+            (vec![60, 400, 2, 35, 8, 19], 2, vec![19, 8, 2, 400, 60]),
+        ];
+        for (input, idx, output) in test_cases {
+            let mut list = List::from_vec(input);
+            let node = list.nth(idx);
+            if let Some(n) = node {
+                let node_ptr = ptr::addr_of!(*n);
+                list.delete_middle_node(node_ptr);
+                assert_eq!(list.to_vec(), output);
+            }
+        }
     }
 }
