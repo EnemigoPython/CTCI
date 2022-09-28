@@ -1,4 +1,5 @@
 pub mod linked_list {
+    use itertools::{EitherOrBoth::*, Itertools};
     use std::collections::HashSet;
     use std::ptr;
 
@@ -80,7 +81,7 @@ pub mod linked_list {
                 if let Some(node) = curr.as_deref() {
                     curr = &node.next;
                 } else {
-                    return None
+                    return None;
                 }
             }
             curr.as_deref()
@@ -91,8 +92,7 @@ pub mod linked_list {
     // impl<T> List<T>  // I started out writing these generic but more and more challenges required int
     // where
     // T: Hash + Eq + Clone + Debug + std::cmp::PartialOrd<i32>,
-    impl List<i32>
-    {
+    impl List<i32> {
         /// remove_dups prompt: Write code to remove duplicates from an unsorted linked list.
         /// FOLLOW UP:
         /// How would you solve this problem if a temporary buffer is not allowed?
@@ -152,7 +152,7 @@ pub mod linked_list {
 
         /// partition prompt: Write code to partition a linked list around a value x, such that all
         /// nodes less than x come before all nodes greater than or equal to x. (IMPORTANT: The
-        /// partition element x can appear anywhere in the "right partition": it does not need to 
+        /// partition element x can appear anywhere in the "right partition": it does not need to
         /// appear between the left and right partitions. The additional spacing in the example below
         /// indicates the partition. Yes, the output below is one of many valid outputs!)
         /// EXAMPLE
@@ -187,20 +187,52 @@ pub mod linked_list {
 
         /// sum_lists prompt: you have two numbers represented by a linked list, where
         /// each node contains a single digit. The digits are stored in reverse order, such
-        /// that the 1's digit is at the head of the list. Write a function that adds the 
+        /// that the 1's digit is at the head of the list. Write a function that adds the
         /// two numbers and returns the sum as a linked list. (You are not allowed to "cheat"
         /// and just convert the linked list to an integer.)
         /// EXAMPLE
         /// Input: (7 -> 1 -> 6) + (5 -> 9 -> 2). That is, 617 + 295.
         /// Output: 2 -> 1 -> 9. That is, 912.
+        pub fn sum_lists(list1: List<i32>, list2: List<i32>) -> List<i32> {
+            let mut ret_list: List<i32> = List::new();
+            let mut buff: Vec<i32> = Vec::new();
+            let mut carry_bit = false;
+            for pair in list1.into_iter().zip_longest(list2.into_iter()) {
+                let mut total = {
+                    if carry_bit {
+                        carry_bit = false;
+                        1
+                    } else {
+                        0
+                    }
+                };
+                total += match pair {
+                    Both(l, r) => l + r,
+                    Left(x) | Right(x) => x,
+                };
+                if total > 9 {
+                    carry_bit = true;
+                    total -= 10;
+                }
+                buff.push(total);
+            }
+            if carry_bit {
+                buff.push(1);
+            }
+            for val in buff.into_iter().rev() {
+                ret_list.push(val);
+            }
+            ret_list
+        }
+
         /// FOLLOW UP
         /// Repeat the problem for forward order.
-        pub fn sum_lists(list1: List<i32>, list2: List<i32>) -> List<i32> {
+        pub fn sum_lists_fwd(list1: List<i32>, list2: List<i32>) -> List<i32> {
             let mut total: i32 = 0;
-            for (e, val) in (0..).zip(list1.iter().map(|v| *v)) {
+            for (e, val) in (0..).zip(list1.into_iter()) {
                 total += val * 10_i32.pow(e);
             }
-            for (e, val) in (0..).zip(list2.iter().map(|v| *v)) {
+            for (e, val) in (0..).zip(list2.into_iter()) {
                 total += val * 10_i32.pow(e);
             }
             let mut ret_list = List::new();
@@ -217,6 +249,20 @@ pub mod linked_list {
             ret_list.push(total);
 
             ret_list
+        }
+
+        /// palindrome prompt: implement a function to check if a linked list is a palindrome.
+        pub fn palindrome(&mut self) -> bool {
+            let mut palindrome_diff = 0;
+            let mut last_diff = 0;
+            let mut stack: Vec<i32> = Vec::new();
+            for val in self.iter() {
+                if let Some(s) = stack.last() {
+                    if val == s {}
+                }
+            }
+
+            true
         }
     }
 
@@ -370,7 +416,11 @@ mod tests {
             (vec![2, 6, 4, 3, 1, 6, 7], 3, vec![2, 1, 7, 6, 3, 4, 6]),
             (vec![3, 8, 6, 5], 9, vec![3, 8, 6, 5]),
             (vec![1, 5, 3, 7, 44, 3], 2, vec![1, 3, 44, 7, 3, 5]),
-            (vec![7, 33, 2, 11, 11, 10, 6, 3, 22], 11, vec![7, 2, 10, 6, 3, 22, 11, 11, 33]),
+            (
+                vec![7, 33, 2, 11, 11, 10, 6, 3, 22],
+                11,
+                vec![7, 2, 10, 6, 3, 22, 11, 11, 33],
+            ),
             (vec![50, 25, 1, 3, 100], 30, vec![25, 1, 3, 100, 50]),
         ];
         for (input, x, output) in test_cases {
@@ -383,6 +433,24 @@ mod tests {
     #[test]
     fn test_sum_lists() {
         let test_cases = vec![
+            (vec![1, 0, 1], vec![5, 1], vec![2, 5, 1]),
+            (vec![4, 2], vec![2, 0], vec![2, 6]),
+            (vec![7, 3], vec![2, 7], vec![0, 0, 1]),
+            (vec![2], vec![4, 4], vec![6, 4]),
+            (vec![2, 0, 4], vec![5, 3, 3], vec![7, 3, 7]),
+            (vec![9, 2, 6], vec![1, 1, 4, 3], vec![9, 6, 0, 2]),
+        ];
+        for (l1, l2, output) in test_cases {
+            assert_eq!(
+                List::sum_lists(List::from_vec(l1), List::from_vec(l2)).to_vec(),
+                output
+            );
+        }
+    }
+
+    #[test]
+    fn test_sum_lists_fwd() {
+        let test_cases = vec![
             (vec![5, 1], vec![1, 0, 1], vec![1, 5, 2]),
             (vec![4, 2], vec![2, 0], vec![6, 2]),
             (vec![7, 3], vec![2, 7], vec![1, 0, 0]),
@@ -392,7 +460,7 @@ mod tests {
         ];
         for (l1, l2, output) in test_cases {
             assert_eq!(
-                List::sum_lists(List::from_vec(l1), List::from_vec(l2)).to_vec(), 
+                List::sum_lists_fwd(List::from_vec(l1), List::from_vec(l2)).to_vec(),
                 output
             );
         }
