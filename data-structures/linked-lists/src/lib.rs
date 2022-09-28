@@ -252,16 +252,18 @@ pub mod linked_list {
         }
 
         /// palindrome prompt: implement a function to check if a linked list is a palindrome.
-        pub fn palindrome(&mut self) -> bool {
-            let mut palindrome_diff = 0;
-            let mut last_diff = 0;
+        pub fn palindrome(&self) -> bool {
             let mut stack: Vec<i32> = Vec::new();
             for val in self.iter() {
-                if let Some(s) = stack.last() {
-                    if val == s {}
+                stack.push(*val);
+            }
+            let mut iter = stack.iter();
+            while let (Some(x), Some(y)) = (iter.next(), iter.next_back()) {
+                if x != y {
+                    return false;
                 }
             }
-
+            
             true
         }
     }
@@ -463,6 +465,25 @@ mod tests {
                 List::sum_lists_fwd(List::from_vec(l1), List::from_vec(l2)).to_vec(),
                 output
             );
+        }
+    }
+
+    #[test]
+    fn test_palindrome() {
+        let test_cases = vec![
+            (vec![4, 5, 6], false),
+            (vec![4, 5, 4], true),
+            (vec![4, 5, 5, 4], true),
+            (vec![8, 5, 8, 7, 8, 5, 8], true),
+            (vec![4, 5, 6, 6, 5, 7, 4], false),
+            (vec![1, 1, 1, 1], true),
+            (vec![8, 9, 7, 7, 7, 9], false),
+            (vec![3, 4, 2, 3, 4, 3], false),
+            (vec![8, 2, 2, 2, 3, 2, 2, 8], false),
+        ];
+        for (input, result) in test_cases {
+            let list = List::from_vec(input);
+            assert_eq!(list.palindrome(), result);
         }
     }
 }
