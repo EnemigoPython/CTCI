@@ -266,6 +266,28 @@ pub mod linked_list {
             
             true
         }
+
+        /// intersection prompt: given two (singly) linked lists, determine if the two
+        /// lists intersect. Return the intersecting node. Note that the intersection is
+        /// defined based on reference, not value. That is, if the kth node of the first
+        /// linked list is the exact same node (by reference) as the jth node of the second
+        /// list, then they are intersecting.
+        pub fn intersection<'a>(_list1: List<i32>, _list2: List<i32>) -> Option<&'a Node<i32>> {
+            // because of the way I have set up my linked list struct, it isn't
+            // possible to create an intersection linked list because the Nodes 
+            // are owned. They would have to be wrapped in Rc<> to be owned by
+            // multiple lists and I can't be bothered to do that. I'll write
+            // psuedo code instead as if it were possible:
+
+            // visited_nodes = set
+            // for ref node in list1:
+                // add ref to set
+            // for ref node in list2:
+                // if ref is in set:
+                    // return it
+            // we got here? no intersection. return None
+            unimplemented!()
+        }
     }
 
     pub struct ListIntoIter<T>(List<T>);
