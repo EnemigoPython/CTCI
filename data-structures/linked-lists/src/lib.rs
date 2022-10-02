@@ -288,6 +288,29 @@ pub mod linked_list {
             // we got here? no intersection. return None
             unimplemented!()
         }
+
+        /// loop_detection prompt: given a linked list which might contain a loop,
+        /// imp,ement an algorithm that returns the node at the beginning of the
+        /// loop (if one exists).
+        /// EXAMPLE
+        /// Input: A -> B -> C -> D -> E -> C (the same C as earlier)
+        /// Output: C
+        pub fn loop_detection<'a>(_list: List<i32>) -> Option<&'a Node<i32>> {
+            // we run into the same problem here - the linked list struct I wrote
+            // doesn't allow two nodes to own the same self.next. Again, it isn't
+            // impossible to do this but it requires a lot of rewriting, so instead
+            // I will write pseudo code to get the point accross of how the algorithm
+            // would look:
+
+            // visited_nodes = set
+            // for ref node in list:
+                // if ref is in set:
+                    // return it
+                // else:
+                    // add it to set
+            // we got here? no loop. return None
+            unimplemented!()
+        }
     }
 
     pub struct ListIntoIter<T>(List<T>);
