@@ -297,10 +297,9 @@ pub mod linked_list {
         /// Output: C
         pub fn loop_detection<'a>(_list: List<i32>) -> Option<&'a Node<i32>> {
             // we run into the same problem here - the linked list struct I wrote
-            // doesn't allow two nodes to own the same self.next. Again, it isn't
-            // impossible to do this but it requires a lot of rewriting, so instead
-            // I will write pseudo code to get the point accross of how the algorithm
-            // would look:
+            // doesn't allow two nodes to own the same self.next. Again, it could
+            // be done but it requires a lot of rewriting, so instead I will write
+            // pseudo code to get the point accross of how the algorithm would look:
 
             // visited_nodes = set
             // for ref node in list:
